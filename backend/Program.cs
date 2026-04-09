@@ -10,8 +10,10 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 
+var dbPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "gym.db");
+dbPath = Path.GetFullPath(dbPath);
 builder.Services.AddDbContext<GymContext>(options =>
-    options.UseSqlite("Data Source=gym.db"));
+    options.UseSqlite($"Data Source={dbPath}"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -20,7 +22,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReact", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins("http://localhost:3000", "http://localhost:3002")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
