@@ -56,8 +56,6 @@ public class TrainingPlansControllerTests
         return (await response.Content.ReadFromJsonAsync<TrainingPlan>())!;
     }
 
-    // ==================== GET ALL ====================
-
     [Test]
     public async Task GetAll_EmptyDatabase_ReturnsOk()
     {
@@ -86,8 +84,6 @@ public class TrainingPlansControllerTests
 
         Assert.That(plans!.Count, Is.EqualTo(2));
     }
-
-    // ==================== GET BY ID ====================
 
     [Test]
     public async Task GetById_ExistingPlan_ReturnsOk()
@@ -120,8 +116,6 @@ public class TrainingPlansControllerTests
         Assert.That(plan!.MemberId, Is.EqualTo(member.Id));
         Assert.That(plan.TrainingId, Is.EqualTo(training.Id));
     }
-
-    // ==================== CREATE ====================
 
     [Test]
     public async Task Create_ValidPlan_ReturnsCreated()
@@ -162,8 +156,6 @@ public class TrainingPlansControllerTests
         Assert.That(getResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
     }
 
-    // ==================== UPDATE ====================
-
     [Test]
     public async Task Update_ExistingPlan_ReturnsNoContent()
     {
@@ -197,8 +189,6 @@ public class TrainingPlansControllerTests
         var response = await _client.PutAsJsonAsync($"/api/trainingplans/{created.Id + 1}", created);
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
-
-    // ==================== DELETE ====================
 
     [Test]
     public async Task Delete_ExistingPlan_ReturnsNoContent()

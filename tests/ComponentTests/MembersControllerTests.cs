@@ -38,8 +38,6 @@ public class MembersControllerTests
         return (await response.Content.ReadFromJsonAsync<Member>())!;
     }
 
-    // ==================== GET ALL ====================
-
     [Test]
     public async Task GetAll_EmptyDatabase_ReturnsOk()
     {
@@ -67,8 +65,6 @@ public class MembersControllerTests
         Assert.That(members!.Count, Is.EqualTo(2));
     }
 
-    // ==================== GET BY ID ====================
-
     [Test]
     public async Task GetById_ExistingMember_ReturnsOk()
     {
@@ -95,8 +91,6 @@ public class MembersControllerTests
         Assert.That(member.LastName, Is.EqualTo("Doe"));
         Assert.That(member.Email, Is.EqualTo("jane@example.com"));
     }
-
-    // ==================== CREATE ====================
 
     [Test]
     public async Task Create_ValidMember_ReturnsCreated()
@@ -128,8 +122,6 @@ public class MembersControllerTests
         Assert.That(getResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
     }
 
-    // ==================== UPDATE ====================
-
     [Test]
     public async Task Update_ExistingMember_ReturnsNoContent()
     {
@@ -154,8 +146,6 @@ public class MembersControllerTests
         var response = await _client.PutAsJsonAsync($"/api/members/{created.Id + 1}", created);
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
-
-    // ==================== DELETE ====================
 
     [Test]
     public async Task Delete_ExistingMember_ReturnsNoContent()

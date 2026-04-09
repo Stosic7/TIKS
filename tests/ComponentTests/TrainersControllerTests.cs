@@ -37,8 +37,6 @@ public class TrainersControllerTests
         return (await response.Content.ReadFromJsonAsync<Trainer>())!;
     }
 
-    // ==================== GET ALL ====================
-
     [Test]
     public async Task GetAll_EmptyDatabase_ReturnsOk()
     {
@@ -66,8 +64,6 @@ public class TrainersControllerTests
         Assert.That(trainers!.Count, Is.EqualTo(2));
     }
 
-    // ==================== GET BY ID ====================
-
     [Test]
     public async Task GetById_ExistingTrainer_ReturnsOk()
     {
@@ -94,8 +90,6 @@ public class TrainersControllerTests
         Assert.That(trainer.LastName, Is.EqualTo("Diaz"));
         Assert.That(trainer.Specialization, Is.EqualTo("Yoga"));
     }
-
-    // ==================== CREATE ====================
 
     [Test]
     public async Task Create_ValidTrainer_ReturnsCreated()
@@ -127,8 +121,6 @@ public class TrainersControllerTests
         Assert.That(getResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
     }
 
-    // ==================== UPDATE ====================
-
     [Test]
     public async Task Update_ExistingTrainer_ReturnsNoContent()
     {
@@ -153,8 +145,6 @@ public class TrainersControllerTests
         var response = await _client.PutAsJsonAsync($"/api/trainers/{created.Id + 1}", created);
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
-
-    // ==================== DELETE ====================
 
     [Test]
     public async Task Delete_ExistingTrainer_ReturnsNoContent()
