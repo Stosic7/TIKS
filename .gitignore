@@ -3,6 +3,8 @@ bin/
 obj/
 *.user
 *.suo
+*.db-shm
+*.db-wal
 
 # React
 frontend/node_modules/
