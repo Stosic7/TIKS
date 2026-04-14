@@ -8,7 +8,6 @@ public class GymOSE2ETests : PageTest
 {
     private const string FrontendUrl = "http://localhost:3000";
 
-    // ==================== NAVIGACIJA ====================
 
     [Test]
     public async Task App_LoadsDashboardByDefault()
@@ -50,7 +49,7 @@ public class GymOSE2ETests : PageTest
         await Expect(Page.Locator(".section-title")).ToContainTextAsync("Manage Plans");
     }
 
-    // ==================== MEMBERS CRUD (UI) ====================
+    
 
     [Test]
     public async Task Members_AddNewMember_AppearsInTable()
@@ -114,7 +113,7 @@ public class GymOSE2ETests : PageTest
         await Expect(Page.Locator(".data-table, .empty-state")).Not.ToContainTextAsync(uniqueLast);
     }
 
-    // ==================== TRAINERS CRUD (UI) ====================
+    
 
     [Test]
     public async Task Trainers_AddNewTrainer_AppearsInTable()
@@ -151,7 +150,7 @@ public class GymOSE2ETests : PageTest
         await Expect(Page.Locator(".data-table, .empty-state")).Not.ToContainTextAsync(uniqueLast);
     }
 
-    // ==================== DASHBOARD ====================
+    
 
     [Test]
     public async Task Dashboard_ShowsStatCards()
