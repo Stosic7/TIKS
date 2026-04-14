@@ -59,7 +59,6 @@ public class TrainingsApiTests : PlaywrightTest
         return json;
     }
 
-    // ==================== GET ALL ====================
 
     [Test]
     public async Task GetAll_ReturnsStatusOk()
@@ -87,7 +86,6 @@ public class TrainingsApiTests : PlaywrightTest
         Assert.That(found, Is.True);
     }
 
-    // ==================== GET BY ID ====================
 
     [Test]
     public async Task GetById_ExistingTraining_ReturnsOk()
@@ -117,7 +115,6 @@ public class TrainingsApiTests : PlaywrightTest
         Assert.That(training.GetProperty("durationInMinutes").GetInt32(), Is.EqualTo(45));
     }
 
-    // ==================== CREATE ====================
 
     [Test]
     public async Task Create_ValidTraining_Returns201()
@@ -150,7 +147,6 @@ public class TrainingsApiTests : PlaywrightTest
         Assert.That(response.Status, Is.EqualTo(200));
     }
 
-    // ==================== UPDATE ====================
 
     [Test]
     public async Task Update_ExistingTraining_Returns204()
@@ -189,7 +185,6 @@ public class TrainingsApiTests : PlaywrightTest
         Assert.That(response.Status, Is.EqualTo(400));
     }
 
-    // ==================== DELETE ====================
 
     [Test]
     public async Task Delete_ExistingTraining_Returns204()

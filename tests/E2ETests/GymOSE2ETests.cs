@@ -160,22 +160,29 @@ public class GymOSE2ETests : PageTest
     }
 
     [Test]
-    public async Task Dashboard_AfterAddingMember_UpdatesMemberCount()
-    {
-        await Page.GotoAsync(FrontendUrl);
+public async Task Dashboard_AfterAddingMember_UpdatesMemberCount()
+{
+    await Page.GotoAsync(FrontendUrl);
 
-        var countBefore = await Page.Locator(".stat-card .stat-value").First.InnerTextAsync();
+    var memberCard = Page.Locator(".stat-card .stat-value").Nth(2);
 
-        await Page.Locator(".nav-item", new() { HasText = "Members" }).ClickAsync();
-        await Page.Locator("input.form-input").Nth(0).FillAsync("Counter");
-        await Page.Locator("input.form-input").Nth(1).FillAsync("Test");
-        await Page.Locator("input[type='email']").FillAsync($"count_{Guid.NewGuid():N}@test.com");
-        await Page.Locator("input[type='date']").FillAsync("2024-04-01");
-        await Page.Locator("button.btn-primary").ClickAsync();
+    await Expect(memberCard).Not.ToHaveTextAsync("", new() { Timeout = 10000 });
+    await Page.WaitForTimeoutAsync(500);
+    var countBefore = await memberCard.InnerTextAsync();
 
-        await Page.Locator(".nav-item", new() { HasText = "Dashboard" }).ClickAsync();
-        var countAfter = await Page.Locator(".stat-card .stat-value").First.InnerTextAsync();
+    await Page.Locator(".nav-item", new() { HasText = "Members" }).ClickAsync();
+    await Page.Locator("input.form-input").Nth(0).FillAsync("Counter");
+    await Page.Locator("input.form-input").Nth(1).FillAsync("Test");
+    await Page.Locator("input[type='email']").FillAsync($"count_{Guid.NewGuid():N}@test.com");
+    await Page.Locator("input[type='date']").FillAsync("2024-04-01");
+    await Page.Locator("button.btn-primary").ClickAsync();
 
-        Assert.That(int.Parse(countAfter), Is.GreaterThanOrEqualTo(int.Parse(countBefore)));
-    }
+    await Page.Locator(".nav-item", new() { HasText = "Dashboard" }).ClickAsync();
+
+    await Expect(memberCard).Not.ToHaveTextAsync("", new() { Timeout = 10000 });
+    await Page.WaitForTimeoutAsync(500);
+    var countAfter = await memberCard.InnerTextAsync();
+
+    Assert.That(int.Parse(countAfter), Is.GreaterThanOrEqualTo(int.Parse(countBefore)));
+}
 }

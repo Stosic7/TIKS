@@ -44,7 +44,6 @@ public class TrainersApiTests : PlaywrightTest
         return json;
     }
 
-    // ==================== GET ALL ====================
 
     [Test]
     public async Task GetAll_ReturnsStatusOk()
@@ -71,7 +70,6 @@ public class TrainersApiTests : PlaywrightTest
         Assert.That(found, Is.True);
     }
 
-    // ==================== GET BY ID ====================
 
     [Test]
     public async Task GetById_ExistingTrainer_ReturnsOk()
@@ -99,7 +97,6 @@ public class TrainersApiTests : PlaywrightTest
         Assert.That(trainer.GetProperty("specialization").GetString(), Is.EqualTo("Boxing"));
     }
 
-    // ==================== CREATE ====================
 
     [Test]
     public async Task Create_ValidTrainer_Returns201()
@@ -129,7 +126,6 @@ public class TrainersApiTests : PlaywrightTest
         Assert.That(response.Status, Is.EqualTo(200));
     }
 
-    // ==================== UPDATE ====================
 
     [Test]
     public async Task Update_ExistingTrainer_Returns204()
@@ -165,7 +161,6 @@ public class TrainersApiTests : PlaywrightTest
         Assert.That(response.Status, Is.EqualTo(400));
     }
 
-    // ==================== DELETE ====================
 
     [Test]
     public async Task Delete_ExistingTrainer_Returns204()
