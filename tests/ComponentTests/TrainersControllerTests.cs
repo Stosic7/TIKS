@@ -82,12 +82,12 @@ public class TrainersControllerTests
     [Test]
     public async Task GetById_ExistingTrainer_ReturnsCorrectData()
     {
-        var created = await CreateTrainerAsync("Carlos", "Diaz", "Yoga");
+        var created = await CreateTrainerAsync("Mario", "Vreco", "Yoga");
         var response = await _client.GetAsync($"/api/trainers/{created.Id}");
         var trainer = await response.Content.ReadFromJsonAsync<Trainer>();
 
-        Assert.That(trainer!.FirstName, Is.EqualTo("Carlos"));
-        Assert.That(trainer.LastName, Is.EqualTo("Diaz"));
+        Assert.That(trainer!.FirstName, Is.EqualTo("Mario"));
+        Assert.That(trainer.LastName, Is.EqualTo("Vreco"));
         Assert.That(trainer.Specialization, Is.EqualTo("Yoga"));
     }
 
