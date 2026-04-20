@@ -56,8 +56,8 @@ public class MembersControllerTests
     [Test]
     public async Task GetAll_WithTwoMembers_ReturnsCorrectCount()
     {
-        await CreateMemberAsync("Alice", "Smith", "alice@example.com");
-        await CreateMemberAsync("Bob", "Jones", "bob@example.com");
+        await CreateMemberAsync("Jovana", "Mitic", "jovanaam@gmail.com");
+        await CreateMemberAsync("Tara", "Bubamara", "taraa@gmail.com");
 
         var response = await _client.GetAsync("/api/members");
         var members = await response.Content.ReadFromJsonAsync<List<Member>>();

@@ -36,14 +36,19 @@ function Dashboard() {
     duration: t.durationInMinutes,
   }));
 
-  const monthlyData = [
-    { month: "Jan", members: Math.max(1, Math.floor(members.length * 0.3)) },
-    { month: "Feb", members: Math.max(1, Math.floor(members.length * 0.4)) },
-    { month: "Mar", members: Math.max(2, Math.floor(members.length * 0.6)) },
-    { month: "Apr", members: Math.max(2, Math.floor(members.length * 0.7)) },
-    { month: "May", members: Math.max(3, Math.floor(members.length * 0.85)) },
-    { month: "Jun", members: Math.max(3, members.length) },
-  ];
+  const monthlyData = (() => {
+    const now = new Date();
+    return Array.from({ length: 6 }, (_, i) => {
+      const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1);
+      return {
+        month: d.toLocaleString("en-US", { month: "short" }),
+        members: members.filter((m) => {
+          const joined = new Date(m.joinDate);
+          return joined.getFullYear() === d.getFullYear() && joined.getMonth() === d.getMonth();
+        }).length,
+      };
+    });
+  })();
 
   const totalSessions = trainings.reduce((sum, t) => sum + t.durationInMinutes, 0);
   const avgDuration = trainings.length > 0 ? Math.round(totalSessions / trainings.length) : 0;

@@ -90,7 +90,7 @@ function Trainers() {
           <form className="entity-form" onSubmit={handleSubmit}>
             <div className="form-group"><label className="form-label">First Name</label><input className="form-input" placeholder="John" value={firstName} onChange={(e) => setFirstName(e.target.value)} required /></div>
             <div className="form-group"><label className="form-label">Last Name</label><input className="form-input" placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} required /></div>
-            <div className="form-group"><label className="form-label">Specialization</label><input className="form-input" placeholder="Strength Training" value={specialization} onChange={(e) => setSpecialization(e.target.value)} required /></div>
+            <div className="form-group"><label className="form-label">Specialization</label><select className="form-input" value={specialization} onChange={(e) => setSpecialization(e.target.value)} required><option value="">-- Select --</option><option>Strength Training</option><option>Cardio</option><option>Yoga</option><option>Crossfit</option><option>Pilates</option><option>Martial Arts</option><option>Swimming</option><option>Cycling</option></select></div>
             <div className="form-actions">
               <button type="submit" className="btn btn-primary">{editingId ? "✓ Update" : "+ Add"}</button>
               {editingId && <button type="button" className="btn btn-ghost" onClick={handleCancelEdit}>Cancel</button>}
