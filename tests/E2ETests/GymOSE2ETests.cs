@@ -6,7 +6,7 @@ namespace E2ETests;
 [TestFixture]
 public class GymOSE2ETests : PageTest
 {
-    private const string FrontendUrl = "http://localhost:3000";
+    private const string FrontendUrl = "http://localhost:3002";
 
 
     [Test]
@@ -49,7 +49,7 @@ public class GymOSE2ETests : PageTest
         await Expect(Page.Locator(".section-title")).ToContainTextAsync("Manage Plans");
     }
 
-    
+
 
     [Test]
     public async Task Members_AddNewMember_AppearsInTable()
@@ -113,7 +113,7 @@ public class GymOSE2ETests : PageTest
         await Expect(Page.Locator(".data-table, .empty-state")).Not.ToContainTextAsync(uniqueLast);
     }
 
-    
+
 
     [Test]
     public async Task Trainers_AddNewTrainer_AppearsInTable()
@@ -123,11 +123,11 @@ public class GymOSE2ETests : PageTest
 
         await Page.Locator("input.form-input").Nth(0).FillAsync("E2E");
         await Page.Locator("input.form-input").Nth(1).FillAsync("Coach");
-        await Page.Locator("input.form-input").Nth(2).FillAsync("Boxing");
+        await Page.Locator("select.form-input").SelectOptionAsync("Crossfit");
         await Page.Locator("button.btn-primary").ClickAsync();
 
         await Expect(Page.Locator(".data-table")).ToContainTextAsync("E2E");
-        await Expect(Page.Locator(".data-table")).ToContainTextAsync("Boxing");
+        await Expect(Page.Locator(".data-table")).ToContainTextAsync("Crossfit");
     }
 
     [Test]
@@ -139,7 +139,7 @@ public class GymOSE2ETests : PageTest
         var uniqueLast = "Tr" + Guid.NewGuid().ToString("N")[..8];
         await Page.Locator("input.form-input").Nth(0).FillAsync("Remove");
         await Page.Locator("input.form-input").Nth(1).FillAsync(uniqueLast);
-        await Page.Locator("input.form-input").Nth(2).FillAsync("Cardio");
+        await Page.Locator("select.form-input").SelectOptionAsync("Cardio");
         await Page.Locator("button.btn-primary").ClickAsync();
 
         var row = Page.Locator(".data-table tr", new() { HasText = uniqueLast });
@@ -150,7 +150,7 @@ public class GymOSE2ETests : PageTest
         await Expect(Page.Locator(".data-table, .empty-state")).Not.ToContainTextAsync(uniqueLast);
     }
 
-    
+
 
     [Test]
     public async Task Dashboard_ShowsStatCards()
@@ -160,29 +160,29 @@ public class GymOSE2ETests : PageTest
     }
 
     [Test]
-public async Task Dashboard_AfterAddingMember_UpdatesMemberCount()
-{
-    await Page.GotoAsync(FrontendUrl);
+    public async Task Dashboard_AfterAddingMember_UpdatesMemberCount()
+    {
+        await Page.GotoAsync(FrontendUrl);
 
-    var memberCard = Page.Locator(".stat-card .stat-value").Nth(2);
+        var memberCard = Page.Locator(".stat-card .stat-value").Nth(2);
 
-    await Expect(memberCard).Not.ToHaveTextAsync("", new() { Timeout = 10000 });
-    await Page.WaitForTimeoutAsync(500);
-    var countBefore = await memberCard.InnerTextAsync();
+        await Expect(memberCard).Not.ToHaveTextAsync("", new() { Timeout = 10000 });
+        await Page.WaitForTimeoutAsync(500);
+        var countBefore = await memberCard.InnerTextAsync();
 
-    await Page.Locator(".nav-item", new() { HasText = "Members" }).ClickAsync();
-    await Page.Locator("input.form-input").Nth(0).FillAsync("Counter");
-    await Page.Locator("input.form-input").Nth(1).FillAsync("Test");
-    await Page.Locator("input[type='email']").FillAsync($"count_{Guid.NewGuid():N}@test.com");
-    await Page.Locator("input[type='date']").FillAsync("2024-04-01");
-    await Page.Locator("button.btn-primary").ClickAsync();
+        await Page.Locator(".nav-item", new() { HasText = "Members" }).ClickAsync();
+        await Page.Locator("input.form-input").Nth(0).FillAsync("Counter");
+        await Page.Locator("input.form-input").Nth(1).FillAsync("Test");
+        await Page.Locator("input[type='email']").FillAsync($"count_{Guid.NewGuid():N}@test.com");
+        await Page.Locator("input[type='date']").FillAsync("2024-04-01");
+        await Page.Locator("button.btn-primary").ClickAsync();
 
-    await Page.Locator(".nav-item", new() { HasText = "Dashboard" }).ClickAsync();
+        await Page.Locator(".nav-item", new() { HasText = "Dashboard" }).ClickAsync();
 
-    await Expect(memberCard).Not.ToHaveTextAsync("", new() { Timeout = 10000 });
-    await Page.WaitForTimeoutAsync(500);
-    var countAfter = await memberCard.InnerTextAsync();
+        await Expect(memberCard).Not.ToHaveTextAsync("", new() { Timeout = 10000 });
+        await Page.WaitForTimeoutAsync(500);
+        var countAfter = await memberCard.InnerTextAsync();
 
-    Assert.That(int.Parse(countAfter), Is.GreaterThanOrEqualTo(int.Parse(countBefore)));
-}
+        Assert.That(int.Parse(countAfter), Is.GreaterThanOrEqualTo(int.Parse(countBefore)));
+    }
 }

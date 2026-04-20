@@ -8,7 +8,7 @@ namespace E2ETests;
 public class MembersApiTests : PlaywrightTest
 {
     private IAPIRequestContext _request = null!;
-    private const string BaseUrl = "http://localhost:5228";
+    private const string BaseUrl = "http://localhost:5229";
     private readonly List<int> _createdIds = new();
 
     [SetUp]
