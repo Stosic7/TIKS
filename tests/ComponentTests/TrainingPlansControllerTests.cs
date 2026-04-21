@@ -27,18 +27,18 @@ public class TrainingPlansControllerTests
 
     private async Task<Member> CreateMemberAsync()
     {
-        var member = new Member { FirstName = "Test", LastName = "Member", Email = "test@example.com", JoinDate = DateTime.UtcNow };
+        var member = new Member { FirstName = "Marko", LastName = "Jovanovic", Email = "marko.jovanovic@example.com", JoinDate = DateTime.UtcNow };
         var response = await _client.PostAsJsonAsync("/api/members", member);
         return (await response.Content.ReadFromJsonAsync<Member>())!;
     }
 
     private async Task<Training> CreateTrainingAsync()
     {
-        var trainer = new Trainer { FirstName = "Test", LastName = "Trainer", Specialization = "Strength" };
+        var trainer = new Trainer { FirstName = "Dejan", LastName = "Stankovic", Specialization = "Snaga" };
         var trainerResponse = await _client.PostAsJsonAsync("/api/trainers", trainer);
         var createdTrainer = (await trainerResponse.Content.ReadFromJsonAsync<Trainer>())!;
 
-        var training = new Training { Name = "Test Training", Description = "Desc", DurationInMinutes = 60, TrainerId = createdTrainer.Id };
+        var training = new Training { Name = "Funkcionalni trening", Description = "Opis", DurationInMinutes = 60, TrainerId = createdTrainer.Id };
         var trainingResponse = await _client.PostAsJsonAsync("/api/trainings", training);
         return (await trainingResponse.Content.ReadFromJsonAsync<Training>())!;
     }

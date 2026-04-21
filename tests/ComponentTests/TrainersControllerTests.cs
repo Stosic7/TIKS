@@ -25,7 +25,7 @@ public class TrainersControllerTests
         _factory.Dispose();
     }
 
-    private async Task<Trainer> CreateTrainerAsync(string firstName = "Mike", string lastName = "Ross", string specialization = "Strength")
+    private async Task<Trainer> CreateTrainerAsync(string firstName = "Milos", string lastName = "Obradovic", string specialization = "Snaga")
     {
         var trainer = new Trainer
         {
@@ -55,8 +55,8 @@ public class TrainersControllerTests
     [Test]
     public async Task GetAll_WithTwoTrainers_ReturnsCorrectCount()
     {
-        await CreateTrainerAsync("Mike", "Ross", "Strength");
-        await CreateTrainerAsync("Sara", "Lee", "Cardio");
+        await CreateTrainerAsync("Milos", "Obradovic", "Snaga");
+        await CreateTrainerAsync("Sara", "Lazarevic", "Kardio");
 
         var response = await _client.GetAsync("/api/trainers");
         var trainers = await response.Content.ReadFromJsonAsync<List<Trainer>>();
@@ -82,19 +82,19 @@ public class TrainersControllerTests
     [Test]
     public async Task GetById_ExistingTrainer_ReturnsCorrectData()
     {
-        var created = await CreateTrainerAsync("Mario", "Vreco", "Yoga");
+        var created = await CreateTrainerAsync("Dragan", "Todorovic", "Joga");
         var response = await _client.GetAsync($"/api/trainers/{created.Id}");
         var trainer = await response.Content.ReadFromJsonAsync<Trainer>();
 
-        Assert.That(trainer!.FirstName, Is.EqualTo("Mario"));
-        Assert.That(trainer.LastName, Is.EqualTo("Vreco"));
-        Assert.That(trainer.Specialization, Is.EqualTo("Yoga"));
+        Assert.That(trainer!.FirstName, Is.EqualTo("Dragan"));
+        Assert.That(trainer.LastName, Is.EqualTo("Todorovic"));
+        Assert.That(trainer.Specialization, Is.EqualTo("Joga"));
     }
 
     [Test]
     public async Task Create_ValidTrainer_ReturnsCreated()
     {
-        var trainer = new Trainer { FirstName = "New", LastName = "Trainer", Specialization = "Boxing" };
+        var trainer = new Trainer { FirstName = "Petar", LastName = "Savic", Specialization = "Boks" };
         var response = await _client.PostAsJsonAsync("/api/trainers", trainer);
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
     }
@@ -102,18 +102,18 @@ public class TrainersControllerTests
     [Test]
     public async Task Create_ValidTrainer_ReturnsCreatedTrainerWithId()
     {
-        var trainer = new Trainer { FirstName = "New", LastName = "Trainer", Specialization = "Boxing" };
+        var trainer = new Trainer { FirstName = "Petar", LastName = "Savic", Specialization = "Boks" };
         var response = await _client.PostAsJsonAsync("/api/trainers", trainer);
         var created = await response.Content.ReadFromJsonAsync<Trainer>();
 
         Assert.That(created!.Id, Is.GreaterThan(0));
-        Assert.That(created.Specialization, Is.EqualTo("Boxing"));
+        Assert.That(created.Specialization, Is.EqualTo("Boks"));
     }
 
     [Test]
     public async Task Create_ValidTrainer_CanBeRetrievedAfterward()
     {
-        var trainer = new Trainer { FirstName = "Persistent", LastName = "Trainer", Specialization = "CrossFit" };
+        var trainer = new Trainer { FirstName = "Aleksandar", LastName = "Popovic", Specialization = "CrossFit" };
         var createResponse = await _client.PostAsJsonAsync("/api/trainers", trainer);
         var created = await createResponse.Content.ReadFromJsonAsync<Trainer>();
 
@@ -133,7 +133,7 @@ public class TrainersControllerTests
     [Test]
     public async Task Update_NonExistingTrainer_ReturnsNotFound()
     {
-        var trainer = new Trainer { Id = 9999, FirstName = "Ghost", LastName = "Trainer", Specialization = "None" };
+        var trainer = new Trainer { Id = 9999, FirstName = "Vladan", LastName = "Ristic", Specialization = "Nema" };
         var response = await _client.PutAsJsonAsync("/api/trainers/9999", trainer);
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }

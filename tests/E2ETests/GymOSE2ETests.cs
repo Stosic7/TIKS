@@ -6,7 +6,7 @@ namespace E2ETests;
 [TestFixture]
 public class GymOSE2ETests : PageTest
 {
-    private const string FrontendUrl = "http://localhost:3002";
+    private const string FrontendUrl = "http://localhost:3000";
 
 
     [Test]
@@ -57,16 +57,16 @@ public class GymOSE2ETests : PageTest
         await Page.GotoAsync(FrontendUrl);
         await Page.Locator(".nav-item", new() { HasText = "Members" }).ClickAsync();
 
-        var uniqueEmail = $"e2e_{Guid.NewGuid():N}@test.com";
+        var uniqueEmail = $"milan_{Guid.NewGuid():N}@test.com";
 
-        await Page.Locator("input.form-input").Nth(0).FillAsync("E2E");
-        await Page.Locator("input.form-input").Nth(1).FillAsync("Tester");
+        await Page.Locator("input.form-input").Nth(0).FillAsync("Milan");
+        await Page.Locator("input.form-input").Nth(1).FillAsync("Petrovic");
         await Page.Locator("input[type='email']").FillAsync(uniqueEmail);
         await Page.Locator("input[type='date']").FillAsync("2024-01-15");
         await Page.Locator("button.btn-primary").ClickAsync();
 
-        await Expect(Page.Locator(".data-table")).ToContainTextAsync("E2E");
-        await Expect(Page.Locator(".data-table")).ToContainTextAsync("Tester");
+        await Expect(Page.Locator(".data-table")).ToContainTextAsync("Milan");
+        await Expect(Page.Locator(".data-table")).ToContainTextAsync("Petrovic");
     }
 
     [Test]
@@ -76,9 +76,9 @@ public class GymOSE2ETests : PageTest
         await Page.Locator(".nav-item", new() { HasText = "Members" }).ClickAsync();
 
         var uniqueLast = "Orig" + Guid.NewGuid().ToString("N")[..6];
-        await Page.Locator("input.form-input").Nth(0).FillAsync("EditMe");
+        await Page.Locator("input.form-input").Nth(0).FillAsync("Jelena");
         await Page.Locator("input.form-input").Nth(1).FillAsync(uniqueLast);
-        await Page.Locator("input[type='email']").FillAsync($"editme_{Guid.NewGuid():N}@test.com");
+        await Page.Locator("input[type='email']").FillAsync($"jelena_{Guid.NewGuid():N}@test.com");
         await Page.Locator("input[type='date']").FillAsync("2024-02-01");
         await Page.Locator("button.btn-primary").ClickAsync();
 
@@ -86,10 +86,10 @@ public class GymOSE2ETests : PageTest
         await row.WaitForAsync();
         await row.Locator(".btn-icon").First.ClickAsync();
 
-        await Page.Locator("input.form-input").Nth(1).FillAsync("Updated");
+        await Page.Locator("input.form-input").Nth(1).FillAsync("Markovic");
         await Page.Locator("button.btn-primary").ClickAsync();
 
-        await Expect(Page.Locator(".data-table")).ToContainTextAsync("Updated");
+        await Expect(Page.Locator(".data-table")).ToContainTextAsync("Markovic");
     }
 
     [Test]
@@ -99,9 +99,9 @@ public class GymOSE2ETests : PageTest
         await Page.Locator(".nav-item", new() { HasText = "Members" }).ClickAsync();
 
         var uniqueLast = "Del" + Guid.NewGuid().ToString("N")[..8];
-        await Page.Locator("input.form-input").Nth(0).FillAsync("ToDelete");
+        await Page.Locator("input.form-input").Nth(0).FillAsync("Branko");
         await Page.Locator("input.form-input").Nth(1).FillAsync(uniqueLast);
-        await Page.Locator("input[type='email']").FillAsync($"del_{Guid.NewGuid():N}@test.com");
+        await Page.Locator("input[type='email']").FillAsync($"branko_{Guid.NewGuid():N}@test.com");
         await Page.Locator("input[type='date']").FillAsync("2024-03-01");
         await Page.Locator("button.btn-primary").ClickAsync();
 
@@ -121,12 +121,12 @@ public class GymOSE2ETests : PageTest
         await Page.GotoAsync(FrontendUrl);
         await Page.Locator(".nav-item", new() { HasText = "Trainers" }).ClickAsync();
 
-        await Page.Locator("input.form-input").Nth(0).FillAsync("E2E");
-        await Page.Locator("input.form-input").Nth(1).FillAsync("Coach");
+        await Page.Locator("input.form-input").Nth(0).FillAsync("Nemanja");
+        await Page.Locator("input.form-input").Nth(1).FillAsync("Kostic");
         await Page.Locator("select.form-input").SelectOptionAsync("Crossfit");
         await Page.Locator("button.btn-primary").ClickAsync();
 
-        await Expect(Page.Locator(".data-table")).ToContainTextAsync("E2E");
+        await Expect(Page.Locator(".data-table")).ToContainTextAsync("Nemanja");
         await Expect(Page.Locator(".data-table")).ToContainTextAsync("Crossfit");
     }
 
@@ -137,7 +137,7 @@ public class GymOSE2ETests : PageTest
         await Page.Locator(".nav-item", new() { HasText = "Trainers" }).ClickAsync();
 
         var uniqueLast = "Tr" + Guid.NewGuid().ToString("N")[..8];
-        await Page.Locator("input.form-input").Nth(0).FillAsync("Remove");
+        await Page.Locator("input.form-input").Nth(0).FillAsync("Predrag");
         await Page.Locator("input.form-input").Nth(1).FillAsync(uniqueLast);
         await Page.Locator("select.form-input").SelectOptionAsync("Cardio");
         await Page.Locator("button.btn-primary").ClickAsync();
@@ -171,9 +171,9 @@ public class GymOSE2ETests : PageTest
         var countBefore = await memberCard.InnerTextAsync();
 
         await Page.Locator(".nav-item", new() { HasText = "Members" }).ClickAsync();
-        await Page.Locator("input.form-input").Nth(0).FillAsync("Counter");
-        await Page.Locator("input.form-input").Nth(1).FillAsync("Test");
-        await Page.Locator("input[type='email']").FillAsync($"count_{Guid.NewGuid():N}@test.com");
+        await Page.Locator("input.form-input").Nth(0).FillAsync("Bojana");
+        await Page.Locator("input.form-input").Nth(1).FillAsync("Simic");
+        await Page.Locator("input[type='email']").FillAsync($"bojana_{Guid.NewGuid():N}@test.com");
         await Page.Locator("input[type='date']").FillAsync("2024-04-01");
         await Page.Locator("button.btn-primary").ClickAsync();
 

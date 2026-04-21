@@ -27,12 +27,12 @@ public class TrainingsControllerTests
 
     private async Task<Trainer> CreateTrainerAsync()
     {
-        var trainer = new Trainer { FirstName = "Test", LastName = "Trainer", Specialization = "Strength" };
+        var trainer = new Trainer { FirstName = "Zoran", LastName = "Pavlovic", Specialization = "Snaga" };
         var response = await _client.PostAsJsonAsync("/api/trainers", trainer);
         return (await response.Content.ReadFromJsonAsync<Trainer>())!;
     }
 
-    private async Task<Training> CreateTrainingAsync(int trainerId, string name = "Morning Workout", string description = "Basic workout", int duration = 60)
+    private async Task<Training> CreateTrainingAsync(int trainerId, string name = "Jutarnji trening", string description = "Osnovni trening", int duration = 60)
     {
         var training = new Training
         {
@@ -64,8 +64,8 @@ public class TrainingsControllerTests
     public async Task GetAll_WithTwoTrainings_ReturnsCorrectCount()
     {
         var trainer = await CreateTrainerAsync();
-        await CreateTrainingAsync(trainer.Id, "Workout A");
-        await CreateTrainingAsync(trainer.Id, "Workout B");
+        await CreateTrainingAsync(trainer.Id, "Trening A");
+        await CreateTrainingAsync(trainer.Id, "Trening B");
 
         var response = await _client.GetAsync("/api/trainings");
         var trainings = await response.Content.ReadFromJsonAsync<List<Training>>();
@@ -93,12 +93,12 @@ public class TrainingsControllerTests
     public async Task GetById_ExistingTraining_ReturnsCorrectData()
     {
         var trainer = await CreateTrainerAsync();
-        var created = await CreateTrainingAsync(trainer.Id, "Cardio Blast", "Intense cardio", 45);
+        var created = await CreateTrainingAsync(trainer.Id, "Kardio udar", "Intenzivan kardio", 45);
 
         var response = await _client.GetAsync($"/api/trainings/{created.Id}");
         var training = await response.Content.ReadFromJsonAsync<Training>();
 
-        Assert.That(training!.Name, Is.EqualTo("Cardio Blast"));
+        Assert.That(training!.Name, Is.EqualTo("Kardio udar"));
         Assert.That(training.DurationInMinutes, Is.EqualTo(45));
         Assert.That(training.TrainerId, Is.EqualTo(trainer.Id));
     }
@@ -107,7 +107,7 @@ public class TrainingsControllerTests
     public async Task Create_ValidTraining_ReturnsCreated()
     {
         var trainer = await CreateTrainerAsync();
-        var training = new Training { Name = "New Training", Description = "Desc", DurationInMinutes = 30, TrainerId = trainer.Id };
+        var training = new Training { Name = "Novi trening", Description = "Opis", DurationInMinutes = 30, TrainerId = trainer.Id };
         var response = await _client.PostAsJsonAsync("/api/trainings", training);
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
     }
@@ -116,19 +116,19 @@ public class TrainingsControllerTests
     public async Task Create_ValidTraining_ReturnsCreatedTrainingWithId()
     {
         var trainer = await CreateTrainerAsync();
-        var training = new Training { Name = "New Training", Description = "Desc", DurationInMinutes = 30, TrainerId = trainer.Id };
+        var training = new Training { Name = "Novi trening", Description = "Opis", DurationInMinutes = 30, TrainerId = trainer.Id };
         var response = await _client.PostAsJsonAsync("/api/trainings", training);
         var created = await response.Content.ReadFromJsonAsync<Training>();
 
         Assert.That(created!.Id, Is.GreaterThan(0));
-        Assert.That(created.Name, Is.EqualTo("New Training"));
+        Assert.That(created.Name, Is.EqualTo("Novi trening"));
     }
 
     [Test]
     public async Task Create_ValidTraining_CanBeRetrievedAfterward()
     {
         var trainer = await CreateTrainerAsync();
-        var training = new Training { Name = "Persistent Training", Description = "Desc", DurationInMinutes = 50, TrainerId = trainer.Id };
+        var training = new Training { Name = "Uporni trening", Description = "Opis", DurationInMinutes = 50, TrainerId = trainer.Id };
         var createResponse = await _client.PostAsJsonAsync("/api/trainings", training);
         var created = await createResponse.Content.ReadFromJsonAsync<Training>();
 
@@ -141,7 +141,7 @@ public class TrainingsControllerTests
     {
         var trainer = await CreateTrainerAsync();
         var created = await CreateTrainingAsync(trainer.Id);
-        created.Name = "Updated Name";
+        created.Name = "Azuriran naziv";
         var response = await _client.PutAsJsonAsync($"/api/trainings/{created.Id}", created);
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
     }
@@ -150,7 +150,7 @@ public class TrainingsControllerTests
     public async Task Update_NonExistingTraining_ReturnsNotFound()
     {
         var trainer = await CreateTrainerAsync();
-        var training = new Training { Id = 9999, Name = "Ghost", Description = "None", DurationInMinutes = 0, TrainerId = trainer.Id };
+        var training = new Training { Id = 9999, Name = "Nepostojeci", Description = "Nema", DurationInMinutes = 0, TrainerId = trainer.Id };
         var response = await _client.PutAsJsonAsync("/api/trainings/9999", training);
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }

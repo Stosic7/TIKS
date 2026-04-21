@@ -49,7 +49,7 @@ public class TrainingPlansApiTests : PlaywrightTest
     {
         var response = await _request.PostAsync("/api/members", new APIRequestContextOptions
         {
-            DataObject = new { firstName = "Test", lastName = "Member", email = $"member_{Guid.NewGuid():N}@test.com", joinDate = DateTime.UtcNow }
+            DataObject = new { firstName = "Marko", lastName = "Jovanovic", email = $"marko_{Guid.NewGuid():N}@test.com", joinDate = DateTime.UtcNow }
         });
         var id = JsonDocument.Parse(await response.TextAsync()).RootElement.GetProperty("id").GetInt32();
         _createdMemberIds.Add(id);
@@ -60,14 +60,14 @@ public class TrainingPlansApiTests : PlaywrightTest
     {
         var trainerResponse = await _request.PostAsync("/api/trainers", new APIRequestContextOptions
         {
-            DataObject = new { firstName = "Test", lastName = "Trainer", specialization = "Strength" }
+            DataObject = new { firstName = "Dejan", lastName = "Stankovic", specialization = "Snaga" }
         });
         var trainerId = JsonDocument.Parse(await trainerResponse.TextAsync()).RootElement.GetProperty("id").GetInt32();
         _createdTrainerIds.Add(trainerId);
 
         var trainingResponse = await _request.PostAsync("/api/trainings", new APIRequestContextOptions
         {
-            DataObject = new { name = "Test Training", description = "Desc", durationInMinutes = 60, trainerId }
+            DataObject = new { name = "Funkcionalni trening", description = "Opis", durationInMinutes = 60, trainerId }
         });
         var trainingId = JsonDocument.Parse(await trainingResponse.TextAsync()).RootElement.GetProperty("id").GetInt32();
         _createdTrainingIds.Add(trainingId);

@@ -33,7 +33,7 @@ public class TrainersApiTests : PlaywrightTest
         await _request.DisposeAsync();
     }
 
-    private async Task<JsonElement> CreateTrainerAndTrack(string firstName = "Test", string lastName = "Trainer", string specialization = "Strength")
+    private async Task<JsonElement> CreateTrainerAndTrack(string firstName = "Milos", string lastName = "Obradovic", string specialization = "Snaga")
     {
         var response = await _request.PostAsync("/api/trainers", new APIRequestContextOptions
         {
@@ -63,7 +63,7 @@ public class TrainersApiTests : PlaywrightTest
     [Test]
     public async Task GetAll_AfterCreate_ContainsNewTrainer()
     {
-        var created = await CreateTrainerAndTrack("Playwright", "Trainer", "Yoga");
+        var created = await CreateTrainerAndTrack("Dejan", "Stankovic", "Joga");
         var response = await _request.GetAsync("/api/trainers");
         var trainers = JsonDocument.Parse(await response.TextAsync()).RootElement;
         var found = trainers.EnumerateArray().Any(t => t.GetProperty("id").GetInt32() == created.GetProperty("id").GetInt32());
@@ -89,12 +89,12 @@ public class TrainersApiTests : PlaywrightTest
     [Test]
     public async Task GetById_ReturnsCorrectTrainerData()
     {
-        var created = await CreateTrainerAndTrack("Unique", "Coach", "Boxing");
+        var created = await CreateTrainerAndTrack("Zoran", "Pavlovic", "Boks");
         var id = created.GetProperty("id").GetInt32();
         var response = await _request.GetAsync($"/api/trainers/{id}");
         var trainer = JsonDocument.Parse(await response.TextAsync()).RootElement;
-        Assert.That(trainer.GetProperty("firstName").GetString(), Is.EqualTo("Unique"));
-        Assert.That(trainer.GetProperty("specialization").GetString(), Is.EqualTo("Boxing"));
+        Assert.That(trainer.GetProperty("firstName").GetString(), Is.EqualTo("Zoran"));
+        Assert.That(trainer.GetProperty("specialization").GetString(), Is.EqualTo("Boks"));
     }
 
 
@@ -103,7 +103,7 @@ public class TrainersApiTests : PlaywrightTest
     {
         var response = await _request.PostAsync("/api/trainers", new APIRequestContextOptions
         {
-            DataObject = new { firstName = "New", lastName = "Trainer", specialization = "Pilates" }
+            DataObject = new { firstName = "Petar", lastName = "Savic", specialization = "Pilates" }
         });
         var id = JsonDocument.Parse(await response.TextAsync()).RootElement.GetProperty("id").GetInt32();
         _createdIds.Add(id);
@@ -113,14 +113,14 @@ public class TrainersApiTests : PlaywrightTest
     [Test]
     public async Task Create_ValidTrainer_ReturnsCreatedObjectWithId()
     {
-        var created = await CreateTrainerAndTrack("Created", "Trainer", "CrossFit");
+        var created = await CreateTrainerAndTrack("Aleksandar", "Popovic", "CrossFit");
         Assert.That(created.GetProperty("id").GetInt32(), Is.GreaterThan(0));
     }
 
     [Test]
     public async Task Create_ValidTrainer_CanBeFoundAfterward()
     {
-        var created = await CreateTrainerAndTrack("Findable", "Trainer", "Swimming");
+        var created = await CreateTrainerAndTrack("Nemanja", "Kostic", "Plivanje");
         var id = created.GetProperty("id").GetInt32();
         var response = await _request.GetAsync($"/api/trainers/{id}");
         Assert.That(response.Status, Is.EqualTo(200));
@@ -134,7 +134,7 @@ public class TrainersApiTests : PlaywrightTest
         var id = created.GetProperty("id").GetInt32();
         var response = await _request.PutAsync($"/api/trainers/{id}", new APIRequestContextOptions
         {
-            DataObject = new { id, firstName = "Updated", lastName = "Trainer", specialization = "Cardio" }
+            DataObject = new { id, firstName = "Dusan", lastName = "Nikolic", specialization = "Kardio" }
         });
         Assert.That(response.Status, Is.EqualTo(204));
     }
@@ -144,7 +144,7 @@ public class TrainersApiTests : PlaywrightTest
     {
         var response = await _request.PutAsync("/api/trainers/999999", new APIRequestContextOptions
         {
-            DataObject = new { id = 999999, firstName = "Ghost", lastName = "Trainer", specialization = "None" }
+            DataObject = new { id = 999999, firstName = "Vladan", lastName = "Ristic", specialization = "Nema" }
         });
         Assert.That(response.Status, Is.EqualTo(404));
     }
@@ -156,7 +156,7 @@ public class TrainersApiTests : PlaywrightTest
         var id = created.GetProperty("id").GetInt32();
         var response = await _request.PutAsync($"/api/trainers/{id + 1}", new APIRequestContextOptions
         {
-            DataObject = new { id, firstName = "Mismatch", lastName = "Trainer", specialization = "None" }
+            DataObject = new { id, firstName = "Bojan", lastName = "Lazarevic", specialization = "Nema" }
         });
         Assert.That(response.Status, Is.EqualTo(400));
     }
@@ -167,7 +167,7 @@ public class TrainersApiTests : PlaywrightTest
     {
         var response = await _request.PostAsync("/api/trainers", new APIRequestContextOptions
         {
-            DataObject = new { firstName = "ToDelete", lastName = "Trainer", specialization = "None" }
+            DataObject = new { firstName = "Dragan", lastName = "Todorovic", specialization = "Nema" }
         });
         var id = JsonDocument.Parse(await response.TextAsync()).RootElement.GetProperty("id").GetInt32();
         var deleteResponse = await _request.DeleteAsync($"/api/trainers/{id}");
@@ -186,7 +186,7 @@ public class TrainersApiTests : PlaywrightTest
     {
         var response = await _request.PostAsync("/api/trainers", new APIRequestContextOptions
         {
-            DataObject = new { firstName = "Gone", lastName = "Trainer", specialization = "None" }
+            DataObject = new { firstName = "Predrag", lastName = "Simic", specialization = "Nema" }
         });
         var id = JsonDocument.Parse(await response.TextAsync()).RootElement.GetProperty("id").GetInt32();
         await _request.DeleteAsync($"/api/trainers/{id}");

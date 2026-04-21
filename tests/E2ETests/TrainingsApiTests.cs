@@ -41,14 +41,14 @@ public class TrainingsApiTests : PlaywrightTest
     {
         var response = await _request.PostAsync("/api/trainers", new APIRequestContextOptions
         {
-            DataObject = new { firstName = "Test", lastName = "Trainer", specialization = "Strength" }
+            DataObject = new { firstName = "Zoran", lastName = "Pavlovic", specialization = "Snaga" }
         });
         var id = JsonDocument.Parse(await response.TextAsync()).RootElement.GetProperty("id").GetInt32();
         _createdTrainerIds.Add(id);
         return id;
     }
 
-    private async Task<JsonElement> CreateTrainingAndTrack(int trainerId, string name = "Test Training", string description = "Desc", int duration = 60)
+    private async Task<JsonElement> CreateTrainingAndTrack(int trainerId, string name = "Jutarnji trening", string description = "Opis", int duration = 60)
     {
         var response = await _request.PostAsync("/api/trainings", new APIRequestContextOptions
         {
@@ -79,7 +79,7 @@ public class TrainingsApiTests : PlaywrightTest
     public async Task GetAll_AfterCreate_ContainsNewTraining()
     {
         var trainerId = await CreateTrainerAndTrack();
-        var created = await CreateTrainingAndTrack(trainerId, "Unique Training");
+        var created = await CreateTrainingAndTrack(trainerId, "Kondicioni trening");
         var response = await _request.GetAsync("/api/trainings");
         var trainings = JsonDocument.Parse(await response.TextAsync()).RootElement;
         var found = trainings.EnumerateArray().Any(t => t.GetProperty("id").GetInt32() == created.GetProperty("id").GetInt32());
@@ -107,11 +107,11 @@ public class TrainingsApiTests : PlaywrightTest
     public async Task GetById_ReturnsCorrectTrainingData()
     {
         var trainerId = await CreateTrainerAndTrack();
-        var created = await CreateTrainingAndTrack(trainerId, "Cardio Blast", "Intense", 45);
+        var created = await CreateTrainingAndTrack(trainerId, "Kardio udar", "Intenzivan", 45);
         var id = created.GetProperty("id").GetInt32();
         var response = await _request.GetAsync($"/api/trainings/{id}");
         var training = JsonDocument.Parse(await response.TextAsync()).RootElement;
-        Assert.That(training.GetProperty("name").GetString(), Is.EqualTo("Cardio Blast"));
+        Assert.That(training.GetProperty("name").GetString(), Is.EqualTo("Kardio udar"));
         Assert.That(training.GetProperty("durationInMinutes").GetInt32(), Is.EqualTo(45));
     }
 
@@ -122,7 +122,7 @@ public class TrainingsApiTests : PlaywrightTest
         var trainerId = await CreateTrainerAndTrack();
         var response = await _request.PostAsync("/api/trainings", new APIRequestContextOptions
         {
-            DataObject = new { name = "New Training", description = "Desc", durationInMinutes = 30, trainerId }
+            DataObject = new { name = "Novi trening", description = "Opis", durationInMinutes = 30, trainerId }
         });
         var id = JsonDocument.Parse(await response.TextAsync()).RootElement.GetProperty("id").GetInt32();
         _createdTrainingIds.Add(id);
@@ -133,7 +133,7 @@ public class TrainingsApiTests : PlaywrightTest
     public async Task Create_ValidTraining_ReturnsCreatedObjectWithId()
     {
         var trainerId = await CreateTrainerAndTrack();
-        var created = await CreateTrainingAndTrack(trainerId, "Created Training");
+        var created = await CreateTrainingAndTrack(trainerId, "Kruzni trening");
         Assert.That(created.GetProperty("id").GetInt32(), Is.GreaterThan(0));
     }
 
@@ -141,7 +141,7 @@ public class TrainingsApiTests : PlaywrightTest
     public async Task Create_ValidTraining_CanBeFoundAfterward()
     {
         var trainerId = await CreateTrainerAndTrack();
-        var created = await CreateTrainingAndTrack(trainerId, "Persistent Training");
+        var created = await CreateTrainingAndTrack(trainerId, "Uporni trening");
         var id = created.GetProperty("id").GetInt32();
         var response = await _request.GetAsync($"/api/trainings/{id}");
         Assert.That(response.Status, Is.EqualTo(200));
@@ -156,7 +156,7 @@ public class TrainingsApiTests : PlaywrightTest
         var id = created.GetProperty("id").GetInt32();
         var response = await _request.PutAsync($"/api/trainings/{id}", new APIRequestContextOptions
         {
-            DataObject = new { id, name = "Updated", description = "Desc", durationInMinutes = 90, trainerId }
+            DataObject = new { id, name = "Azuriran", description = "Opis", durationInMinutes = 90, trainerId }
         });
         Assert.That(response.Status, Is.EqualTo(204));
     }
@@ -167,7 +167,7 @@ public class TrainingsApiTests : PlaywrightTest
         var trainerId = await CreateTrainerAndTrack();
         var response = await _request.PutAsync("/api/trainings/999999", new APIRequestContextOptions
         {
-            DataObject = new { id = 999999, name = "Ghost", description = "None", durationInMinutes = 0, trainerId }
+            DataObject = new { id = 999999, name = "Nepostojeci", description = "Nema", durationInMinutes = 0, trainerId }
         });
         Assert.That(response.Status, Is.EqualTo(404));
     }
@@ -180,7 +180,7 @@ public class TrainingsApiTests : PlaywrightTest
         var id = created.GetProperty("id").GetInt32();
         var response = await _request.PutAsync($"/api/trainings/{id + 1}", new APIRequestContextOptions
         {
-            DataObject = new { id, name = "Mismatch", description = "Desc", durationInMinutes = 60, trainerId }
+            DataObject = new { id, name = "Nepodudaranje", description = "Opis", durationInMinutes = 60, trainerId }
         });
         Assert.That(response.Status, Is.EqualTo(400));
     }
@@ -192,7 +192,7 @@ public class TrainingsApiTests : PlaywrightTest
         var trainerId = await CreateTrainerAndTrack();
         var response = await _request.PostAsync("/api/trainings", new APIRequestContextOptions
         {
-            DataObject = new { name = "ToDelete", description = "Desc", durationInMinutes = 30, trainerId }
+            DataObject = new { name = "Za brisanje", description = "Opis", durationInMinutes = 30, trainerId }
         });
         var id = JsonDocument.Parse(await response.TextAsync()).RootElement.GetProperty("id").GetInt32();
         var deleteResponse = await _request.DeleteAsync($"/api/trainings/{id}");
@@ -212,7 +212,7 @@ public class TrainingsApiTests : PlaywrightTest
         var trainerId = await CreateTrainerAndTrack();
         var response = await _request.PostAsync("/api/trainings", new APIRequestContextOptions
         {
-            DataObject = new { name = "Gone", description = "Desc", durationInMinutes = 30, trainerId }
+            DataObject = new { name = "Obrisan", description = "Opis", durationInMinutes = 30, trainerId }
         });
         var id = JsonDocument.Parse(await response.TextAsync()).RootElement.GetProperty("id").GetInt32();
         await _request.DeleteAsync($"/api/trainings/{id}");

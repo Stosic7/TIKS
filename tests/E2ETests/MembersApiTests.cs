@@ -8,7 +8,7 @@ namespace E2ETests;
 public class MembersApiTests : PlaywrightTest
 {
     private IAPIRequestContext _request = null!;
-    private const string BaseUrl = "http://localhost:5229";
+    private const string BaseUrl = "http://localhost:5228";
     private readonly List<int> _createdIds = new();
 
     [SetUp]
@@ -33,7 +33,7 @@ public class MembersApiTests : PlaywrightTest
         await _request.DisposeAsync();
     }
 
-    private async Task<JsonElement> CreateMemberAndTrack(string firstName = "Test", string lastName = "User", string email = "test@playwright.com")
+    private async Task<JsonElement> CreateMemberAndTrack(string firstName = "Marko", string lastName = "Jovanovic", string email = "marko@playwright.com")
     {
         var response = await _request.PostAsync("/api/members", new APIRequestContextOptions
         {
@@ -43,8 +43,6 @@ public class MembersApiTests : PlaywrightTest
         _createdIds.Add(json.GetProperty("id").GetInt32());
         return json;
     }
-
-    // ==================== GET ALL ====================
 
     [Test]
     public async Task GetAll_ReturnsStatusOk()
@@ -65,14 +63,12 @@ public class MembersApiTests : PlaywrightTest
     [Test]
     public async Task GetAll_AfterCreate_ContainsNewMember()
     {
-        var created = await CreateMemberAndTrack("Playwright", "Member", "playwright@test.com");
+        var created = await CreateMemberAndTrack("Nikola", "Petrovic", "nikola.petrovic@test.com");
         var response = await _request.GetAsync("/api/members");
         var members = JsonDocument.Parse(await response.TextAsync()).RootElement;
         var found = members.EnumerateArray().Any(m => m.GetProperty("id").GetInt32() == created.GetProperty("id").GetInt32());
         Assert.That(found, Is.True);
     }
-
-    // ==================== GET BY ID ====================
 
     [Test]
     public async Task GetById_ExistingMember_ReturnsOk()
@@ -92,22 +88,20 @@ public class MembersApiTests : PlaywrightTest
     [Test]
     public async Task GetById_ReturnsCorrectMemberData()
     {
-        var created = await CreateMemberAndTrack("Unique", "Name", "unique@test.com");
+        var created = await CreateMemberAndTrack("Jovana", "Milic", "jovana.milic@test.com");
         var id = created.GetProperty("id").GetInt32();
         var response = await _request.GetAsync($"/api/members/{id}");
         var member = JsonDocument.Parse(await response.TextAsync()).RootElement;
-        Assert.That(member.GetProperty("firstName").GetString(), Is.EqualTo("Unique"));
-        Assert.That(member.GetProperty("email").GetString(), Is.EqualTo("unique@test.com"));
+        Assert.That(member.GetProperty("firstName").GetString(), Is.EqualTo("Jovana"));
+        Assert.That(member.GetProperty("email").GetString(), Is.EqualTo("jovana.milic@test.com"));
     }
-
-    // ==================== CREATE ====================
 
     [Test]
     public async Task Create_ValidMember_Returns201()
     {
         var response = await _request.PostAsync("/api/members", new APIRequestContextOptions
         {
-            DataObject = new { firstName = "New", lastName = "Member", email = "new@test.com", joinDate = DateTime.UtcNow }
+            DataObject = new { firstName = "Stefan", lastName = "Ilic", email = "stefan.ilic@test.com", joinDate = DateTime.UtcNow }
         });
         var id = JsonDocument.Parse(await response.TextAsync()).RootElement.GetProperty("id").GetInt32();
         _createdIds.Add(id);
@@ -117,20 +111,18 @@ public class MembersApiTests : PlaywrightTest
     [Test]
     public async Task Create_ValidMember_ReturnsCreatedObjectWithId()
     {
-        var created = await CreateMemberAndTrack("Created", "User", "created@test.com");
+        var created = await CreateMemberAndTrack("Milica", "Djordjevic", "milica.djordjevic@test.com");
         Assert.That(created.GetProperty("id").GetInt32(), Is.GreaterThan(0));
     }
 
     [Test]
     public async Task Create_ValidMember_CanBeFoundAfterward()
     {
-        var created = await CreateMemberAndTrack("Findable", "User", "find@test.com");
+        var created = await CreateMemberAndTrack("Ana", "Stankovic", "ana.stankovic@test.com");
         var id = created.GetProperty("id").GetInt32();
         var response = await _request.GetAsync($"/api/members/{id}");
         Assert.That(response.Status, Is.EqualTo(200));
     }
-
-    // ==================== UPDATE ====================
 
     [Test]
     public async Task Update_ExistingMember_Returns204()
@@ -139,7 +131,7 @@ public class MembersApiTests : PlaywrightTest
         var id = created.GetProperty("id").GetInt32();
         var response = await _request.PutAsync($"/api/members/{id}", new APIRequestContextOptions
         {
-            DataObject = new { id, firstName = "Updated", lastName = "User", email = "updated@test.com", joinDate = DateTime.UtcNow }
+            DataObject = new { id, firstName = "Dusan", lastName = "Pavlovic", email = "dusan.pavlovic@test.com", joinDate = DateTime.UtcNow }
         });
         Assert.That(response.Status, Is.EqualTo(204));
     }
@@ -149,7 +141,7 @@ public class MembersApiTests : PlaywrightTest
     {
         var response = await _request.PutAsync("/api/members/999999", new APIRequestContextOptions
         {
-            DataObject = new { id = 999999, firstName = "Ghost", lastName = "User", email = "ghost@test.com", joinDate = DateTime.UtcNow }
+            DataObject = new { id = 999999, firstName = "Lazar", lastName = "Ristic", email = "lazar.ristic@test.com", joinDate = DateTime.UtcNow }
         });
         Assert.That(response.Status, Is.EqualTo(404));
     }
@@ -161,19 +153,17 @@ public class MembersApiTests : PlaywrightTest
         var id = created.GetProperty("id").GetInt32();
         var response = await _request.PutAsync($"/api/members/{id + 1}", new APIRequestContextOptions
         {
-            DataObject = new { id, firstName = "Mismatch", lastName = "User", email = "mis@test.com", joinDate = DateTime.UtcNow }
+            DataObject = new { id, firstName = "Bojan", lastName = "Savic", email = "bojan.savic@test.com", joinDate = DateTime.UtcNow }
         });
         Assert.That(response.Status, Is.EqualTo(400));
     }
-
-    // ==================== DELETE ====================
 
     [Test]
     public async Task Delete_ExistingMember_Returns204()
     {
         var response = await _request.PostAsync("/api/members", new APIRequestContextOptions
         {
-            DataObject = new { firstName = "ToDelete", lastName = "User", email = "del@test.com", joinDate = DateTime.UtcNow }
+            DataObject = new { firstName = "Dragan", lastName = "Todorovic", email = "dragan.todorovic@test.com", joinDate = DateTime.UtcNow }
         });
         var id = JsonDocument.Parse(await response.TextAsync()).RootElement.GetProperty("id").GetInt32();
         var deleteResponse = await _request.DeleteAsync($"/api/members/{id}");
@@ -192,7 +182,7 @@ public class MembersApiTests : PlaywrightTest
     {
         var response = await _request.PostAsync("/api/members", new APIRequestContextOptions
         {
-            DataObject = new { firstName = "Gone", lastName = "User", email = "gone@test.com", joinDate = DateTime.UtcNow }
+            DataObject = new { firstName = "Vladan", lastName = "Popovic", email = "vladan.popovic@test.com", joinDate = DateTime.UtcNow }
         });
         var id = JsonDocument.Parse(await response.TextAsync()).RootElement.GetProperty("id").GetInt32();
         await _request.DeleteAsync($"/api/members/{id}");
